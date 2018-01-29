@@ -8,14 +8,15 @@
     }
     var factoryMap = {};
     var modulesMap = {};
+    var loadingMap = {};
     var head = document.getElementsByTagName('head')[0];
 
     function loadScript(id, callback) {
-		var script = document.createElement('script');
+        var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = id;
         head.appendChild(script);
-        callback();
+        script.onload = callback;
     }
 
     define = function(id, factory) {
@@ -46,16 +47,25 @@
     };
 
     require.async = function(names, callback) {
-    	console.log(names)
-    	if (typeof names === 'string') {
-    		names = [names]
-    	}
-    	function load(callback) {
-    		for (var i = names.length - 1; i >= 0; i--) {
-    			loadScript(names[i], callback);
-    		}
-    	}
-    	load(callback)
+        if (typeof names === 'string') {
+            names = [names]
+        }
+
+        var num = names.length;
+
+        function loadOne() {
+            num--;
+            if (num === 0) {
+                callback()
+            }
+        }
+
+        function load() {
+            for (var i = names.length - 1; i >= 0; i--) {
+                loadScript(names[i], loadOne);
+            }
+        }
+        load()
     }
 
     define.amd = {

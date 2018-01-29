@@ -7,14 +7,11 @@
 <body>
 	<script src="./Amod.js"></script>
 	<script src="./a.js"></script>
-	<script src="./b.js"></script>
 	<script>
-		require.async('c.js', function() {
-			console.log(require('a'))
+		require.async(['c.js', 'd.js'], function() {
+			console.log(require('c'));
+			console.log(require('d'));
 		});
-		const a = require('a');
-		const b = require('b');
-		console.log(a, b);
 	</script>
 </body>
 </html>
